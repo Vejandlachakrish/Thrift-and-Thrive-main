@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - Thrift & Thrive</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/common.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
+</head>
+<body>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        <div class="flash-messages">
+            {% for category, message in messages %}
+                <div class="flash {{ 'flash-success' if category == 'success' else '' }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
+    {% endwith %}
+    <script>
+        // JavaScript to auto-hide flash messages after 3 seconds
+        setTimeout(function() {
+            const flashMessages = document.querySelector('.flash-messages');
+            if (flashMessages) {
+                flashMessages.style.display = 'none';
+            }
+        }, 3000); // 3 seconds
+
+        // Open login modal automatically if login_failed is in the URL
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.has('login_failed')) {
+                openModal(); // Function to open login modal
+            }
+        });
+    </script>
+
+    <header>
+        <div class="navbar">
+            <a href="/">Home</a>
+            <a href="/shop">Shop</a>
+            <a href="/about">About</a>
+            {% if 'user_id' in session %}
+                <a href="/profile">Profile</a>
+                <a href="/cart"><span class="cart-icon">🛒 <span class="cart-count">{{ cart_count }}</span></span></a>
+                {% if is_admin %}
+                    <a href="/admin">Admin</a>
+                {% endif %}
+                <a href="/logout">Logout</a>
+            {% else %}
+                <a href="/cart"><span class="cart-icon">🛒 <span class="cart-count">{{ cart_count }}</span></span></a>
+                <a href="#" onclick="openModal()">Login</a>
+            {% endif %}
+        </div>
+    </header>
+
+    <div class="profile-container">
+        <h1>Welcome, {{ user.email }}!</h1>
+    
+        <section class="address-management">
+            <h2>Manage Your Addresses</h2>
+    
+            <!-- Display User's Addresses -->
+            {% if addresses %}
+                <ul class="address-list">
+                    {% for address in addresses %}
+                        <li class="address-item">
+                            <p>
+                                <strong>{{ address.label }}</strong><br>
+                                {{ address.street }}, {{ address.city }}, {{ address.state }}, {{ address.zip_code }}, {{ address.country }}
+                                {% if address.phone_number %} <br>(Phone: {{ address.phone_number }}) {% endif %}
+                            </p>
+                            <form action="{{ url_for('delete_address', address_id=address.id) }}" method="post">
+                                <button type="submit" class="delete-btn">Delete</button>
+                            </form>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="no-address-msg">No addresses added yet.</p>
+            {% endif %}
+        </section>
+
+        <section class="order-history">
+            <h2>Order History</h2>
+            {% if purchase_events %}
+                <ul class="order-list">
+                    {% for event in purchase_events %}
+                        <li class="order-item">
+                            <div class="order-card">
+                                <div class="order-header">
+                                    <p><strong>Order ID:</strong> {{ event.id }}</p>
+                                    <p><strong>Purchase Date:</strong> {{ event.purchase_date.strftime('%Y-%m-%d') }}</p>
+                                    <p><strong>Shipping Address:</strong> {{ event.address.street }}, {{ event.address.city }}, {{ event.address.state }}, {{ event.address.zip_code }}</p>
+                                    <p><strong>Phone:</strong> {{ event.address.phone_number }}</p>
+                                </div>
+                                
+                                <div class="product-section">
+                                    <h4>Products:</h4>
+                                    {% if event.purchases %}
+                                        <ul class="product-list">
+                                            {% for purchase in event.purchases %}
+                                                <li class="product-item">
+                                                    <div class="product-card">
+                                                        <p><strong>Product Name:</strong> {{ purchase.product.name }}</p>
+                                                        <p><strong>Quantity:</strong> {{ purchase.quantity }}</p>
+                                                    </div>
+                                                </li>
+                                            {% endfor %}
+                                        </ul>
+                                    {% else %}
+                                        <p class="no-products-message">No products found for this order.</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="no-orders-message">No purchase history found.</p>
+            {% endif %}
+        </section>
+    
+        <!-- Form to Add New Address -->
+        <section class="add-address">
+            <h2>Add New Address</h3>
+            <form action="{{ url_for('add_address') }}" method="post" class="address-form">
+                <input type="text" name="label" placeholder="Address Label (e.g., Home, Office)" maxlength="50">
+                <input type="text" name="street" placeholder="Street" required>
+                <input type="text" name="city" placeholder="City" required>
+                <input type="text" name="state" placeholder="State" required>
+                <input type="text" name="zip_code" placeholder="ZIP Code" required>
+                <input type="text" name="country" placeholder="Country" required>
+                <input type="text" name="phone_number" placeholder="Phone Number (optional)">
+                <button type="submit" class="add-btn">Add Address</button>
+            </form>
+        </section>
+    </div>
+    <footer>
+        <p>&copy; 2024 Thrift and Thrive. All rights reserved.</p>
+    </footer>
+</body>
+</html>

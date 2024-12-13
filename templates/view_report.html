@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Report</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/view_report.css') }}">
+</head>
+<body>
+    <header class="report-header">
+        <h1>Report Details</h1>
+        <a href="{{ url_for('admin') }}" class="back-button">← Back to Admin Dashboard</a>
+    </header>
+
+    <main>
+        <section class="report-content">
+            <h2>Report Content</h2>
+            {% if report_content|length == 1 %}
+                <p class="no-data-message">No data found</p>
+            {% else %}
+                <table class="report-table">
+                    <thead>
+                        <tr>
+                            {% for header in report_content[0] %}
+                                <th>{{ header }}</th>
+                            {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in report_content[1:] %}
+                            <tr>
+                                {% for cell in row %}
+                                    <td>{{ cell }}</td>
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% endif %}
+        </section>
+    </main>
+
+    <footer class="report-footer">
+        <p>&copy; 2024 Thrift and Thrive. All rights reserved.</p>
+    </footer>
+</body>
+</html>

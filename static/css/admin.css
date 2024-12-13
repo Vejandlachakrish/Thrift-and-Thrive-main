@@ -1,0 +1,125 @@
+body {
+    margin: 0;
+    font-family: 'Roboto', sans-serif;
+    color: #333;
+}
+
+/* Admin Dashboard Styling */
+.admin-dashboard {
+    max-width: 800px;
+    margin: 50px auto 50px;
+    padding: 20px;
+    font-family: 'Roboto', sans-serif;
+}
+
+.admin-dashboard h2 {
+    font-size: 2em;
+    color: rgb(121, 57, 145);
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.dashboard-section {
+    background: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.dashboard-section h3 {
+    color: #333;
+    font-size: 1.5em;
+    margin-bottom: 15px;
+    margin-top: 0px;
+    border-bottom: 2px solid #ddd;
+    padding-bottom: 10px;
+}
+
+.button-group {
+    display: flex;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.btn {
+    padding: 10px 15px;
+    font-weight: bold;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    border-radius: 5px;
+    border: none;
+}
+
+.btn-primary {
+    background-color: rgb(121, 57, 145);
+    color: white;
+}
+
+.btn-danger {
+    background-color: red;
+    color: white;
+}
+
+.btn:hover {
+    opacity: 0.8;
+}
+
+/* Style for report list */
+.report-list {
+    list-style-type: none;
+    padding: 10px 0;
+    margin: 0;
+}
+
+.report-item {
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.report-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Style for report date */
+.report-date {
+    font-weight: bold;
+    color: #555;
+}
+
+/* Common button style */
+.btn {
+    text-decoration: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    font-size: 0.9em;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-block;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* Specific button colors */
+.btn-view {
+    background-color: #4CAF50; /* Green */
+    color: white;
+}
+
+.btn-download {
+    background-color: #007BFF; /* Blue */
+    color: white;
+}
+
+/* Hover effects for buttons */
+.btn:hover {
+    opacity: 0.9;
+}

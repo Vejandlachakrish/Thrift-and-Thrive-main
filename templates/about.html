@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/about.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/common.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <title>About Us - Thrift and Thrive</title>
+</head>
+<body>
+    <header>
+        <div class="navbar">
+            <a href="/">Home</a>
+            <a href="/shop">Shop</a>
+            <a href="/about">About</a>
+            {% if 'user_id' in session %}
+                <a href="/profile">Profile</a>
+                <a href="/cart"><span class="cart-icon">🛒 <span class="cart-count">{{ cart_count }}</span></span></a>
+                {% if is_admin %}
+                    <a href="/admin">Admin</a>
+                {% endif %}
+                <a href="/logout">Logout</a>
+            {% else %}
+                <a href="/cart"><span class="cart-icon">🛒 <span class="cart-count">{{ cart_count }}</span></span></a>
+                <a href="#" onclick="openModal()">Login</a>
+            {% endif %}
+        </div>
+    </header>
+
+        <!-- Registration/Login Modal -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2>Login / Register</h2>
+
+            <!-- Login Form -->
+            <form id="loginForm" action="{{ url_for('login') }}" method="POST">
+                <input type="hidden" name="next" value="{{ request.args.get('next') or request.path }}">
+                
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+                
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required>
+                
+                <button type="submit">Login</button>
+                <p>Don’t have an account? <a href="#" onclick="switchToRegister()">Register here</a></p>
+            </form>
+
+            <!-- Register Form -->
+            <form id="registerForm" action="{{ url_for('register') }}" method="POST" style="display: none;">
+                <input type="hidden" name="next" value="{{ request.args.get('next') or request.path }}">
+                <label for="reg-email">Email:</label>
+                <input type="email" id="reg-email" name="reg-email" required>
+                <label for="reg-password">Password:</label>
+                <input type="password" id="reg-password" name="reg-password" required>
+                <label for="confirm-password">Confirm Password:</label>
+                <input type="password" id="confirm-password" name="confirm-password" required>
+                <button type="submit">Register</button>
+                <p>Already have an account? <a href="#" onclick="switchToLogin()">Login here</a></p>
+            </form>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/modal.js') }}"></script>
+
+    <script>
+        function openSellModal() {
+            document.getElementById("sell-modal").style.display = "block";
+        }
+    
+        function closeSellModal() {
+            document.getElementById("sell-modal").style.display = "none";
+        }
+    
+        // Close the modal when clicking outside the modal content
+        window.onclick = function(event) {
+            if (event.target === document.getElementById("sell-modal")) {
+                closeSellModal();
+            }
+        };
+    </script>
+
+    <div class="content-wrapper">
+        <!-- About Section Header -->
+        <div class="shop-header">
+            <h1>About Us</h1>
+            <p>Thrift and Thrive is your go-to online thrift store, where sustainability meets style. Discover unique, pre-loved treasures and help reduce waste while looking fabulous!</p>
+        </div>
+
+        <!-- Our Mission Section -->
+        <div class="mission-section">
+            <h2>Our Mission</h2>
+            <p>At Thrift and Thrive, our mission is to make sustainable fashion accessible to everyone. We believe that looking good and living responsibly should go hand-in-hand. By promoting pre-loved fashion, we strive to reduce waste and encourage a circular economy that benefits both people and the planet.</p>
+        </div>
+
+        <!-- Our Values Section -->
+        <div class="values-section">
+            <h2>Our Values</h2>
+            <ul>
+                <li><strong>Sustainability:</strong> We’re dedicated to reducing our environmental footprint by encouraging second-hand fashion and minimizing waste.</li>
+                <li><strong>Quality:</strong> Every item we sell is carefully curated to ensure that it meets our standards for quality, durability, and style.</li>
+                <li><strong>Community:</strong> We believe in building a community of conscious consumers who support each other and the planet.</li>
+                <li><strong>Affordability:</strong> Fashion should be accessible to all, and we’re committed to offering great products at reasonable prices.</li>
+            </ul>
+        </div>
+
+        <!-- Meet Our Team Section -->
+        <div class="team-section">
+            <h2>Meet Our Team</h2>
+            <p>We are a group of passionate individuals committed to making fashion sustainable and accessible for everyone.</p>
+        
+            
+            <div class="team-members">
+                <div class="team-member">
+                    <img src="../static/profile.jpg" alt="Harasiddh">
+                    <p><strong>Harasiddh</strong><br>Founder & CEO</p>
+                </div>
+                <div class="team-member">
+                    <img src="../static/profile.jpg" alt="Chakrish">
+                    <p><strong>Chakrish</strong><br>Creative Director</p>
+                </div>
+                <div class="team-member">
+                    <img src="../static/profile.jpg" alt="Spurthi">
+                    <p><strong>Spurthi</strong><br>Operations Manager</p>
+                </div>
+                <div class="team-member">
+                    <img src="../static/profile.jpg" alt="Sriman">
+                    <p><strong>Sriman</strong><br>Founder & CEO</p>
+                </div>
+                <div class="team-member">
+                    <img src="../static/profile.jpg" alt="Harshini">
+                    <p><strong>Harshini</strong><br>Founder & CEO</p>
+                </div>
+            </div>
+        </div> 
+    </div>
+
+
+    <footer>
+        <p>&copy; 2024 Thrift and Thrive. All rights reserved.</p>
+    </footer>
+</body>
+</html>

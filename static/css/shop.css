@@ -1,0 +1,176 @@
+body {
+    margin: 0;
+    font-family: 'Roboto', sans-serif;
+    color: #333;
+}
+
+.shop-header {
+    margin-top: 50px;
+    text-align: center;
+    padding: 20px;
+}
+
+/* Button Styling */
+.sell-button {
+    margin-left: 10px;
+    background-color: #ff6b6b; /* Soft red color */
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* subtle shadow for depth */
+}
+
+.sell-button:hover {
+    background-color: #ff5252; /* Darker shade on hover */
+    transform: scale(1.05); /* Slightly enlarges */
+}
+
+.sell-button:active {
+    background-color: #e60000; /* Darker red on click */
+    transform: scale(0.98); /* Slightly reduces size for click effect */
+}
+
+#search-bar {
+    width: 60%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+.catalog {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+    padding: 20px;
+}
+
+.item-card {
+    background-color: #fff;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.item-card img {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+}
+
+.item-card h2 {
+    font-size: 1.2em;
+    margin: 10px 0;
+}
+
+.item-card p {
+    font-size: 1em;
+    margin: 5px 0;
+}
+
+.item-card button {
+    padding: 10px;
+    background-color: #28a745;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.item-card button:hover {
+    background-color: #218838;
+}
+
+/* Modal background */
+.sell-modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+/* Modal content */
+.sell-modal-content {
+    background-color: #fefefe;
+    margin: 4% auto;
+    padding: 4%;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+    position: relative;
+    animation: fadeIn 0.4s;
+}
+
+/* Close button */
+.sell-close {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 24px;
+    color: #333;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+/* Form labels */
+label {
+    font-weight: bold;
+    margin-top: 10px;
+    display: block;
+    color: #555;
+}
+
+/* Input fields */
+input[type="text"],
+input[type="number"],
+textarea,
+select {
+    width: 95%;
+    padding: 10px;
+    margin: 5px 0 15px 0;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+/* Upload button */
+input[type="file"] {
+    padding: 5px;
+    font-size: 14px;
+}
+
+/* Submit button */
+.btn-success {
+    background-color: #28a745;
+    color: white;
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+    transition: background-color 0.3s;
+}
+
+.btn-success:hover {
+    background-color: #218838;
+}
+
+/* Animation */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}

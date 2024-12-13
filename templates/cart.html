@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Cart</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/cart.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/common.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        <div class="flash-messages">
+            {% for category, message in messages %}
+                <div class="flash {{ 'flash-success' if category == 'success' else '' }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
+    {% endwith %}
+    <script>
+        // JavaScript to auto-hide flash messages after 3 seconds
+        setTimeout(function() {
+            const flashMessages = document.querySelector('.flash-messages');
+            if (flashMessages) {
+                flashMessages.style.display = 'none';
+            }
+        }, 3000); // 3 seconds
+
+        // Open login modal automatically if login_failed is in the URL
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.has('login_failed')) {
+                openModal(); // Function to open login modal
+            }
+        });
+    </script>
+
+    <header>
+        <div class="navbar">
+            <a href="/">Home</a>
+            <a href="/shop">Shop</a>
+            <a href="/about">About</a>
+            {% if 'user_id' in session %}
+                <a href="/profile">Profile</a>
+                <a href="/cart"><span class="cart-icon">🛒 <span class="cart-count">{{ cart_count }}</span></span></a>
+                {% if is_admin %}
+                    <a href="/admin">Admin</a>
+                {% endif %}
+                <a href="/logout">Logout</a>
+            {% else %}
+                <a href="/cart"><span class="cart-icon">🛒 <span class="cart-count">{{ cart_count }}</span></span></a>
+                <a href="#" onclick="openModal()">Login</a>
+            {% endif %}
+        </div>
+    </header>
+
+    <div class="container">
+        <section class="cart-header">
+            <h1>Your Shopping Cart</h1>
+        </section>
+        {% if cart_items %}
+            <div class="cart-items">
+                {% for cart_item, product in cart_items %}
+                    <div class="cart-item">
+                        <img src="{{ url_for('static', filename='uploads/' + product.image_filename) }}" alt="{{ product.name }}" class="cart-item-image" onerror="this.src='https://via.placeholder.com/150';">
+                        <div class="cart-item-details">
+                            <h2>{{ product.name }}</h2>
+                            <p>Price: ₹{{ product.price }}</p>
+                            <p>Condition: {{ product.condition }}</p> <!-- Display condition -->
+                            <form action="{{ url_for('updateitem') }}" method="POST" class="update-item-form">
+                                <input type="number" name="quantity" value="{{ cart_item.quantity }}" min="1" class="quantity-input" onchange="enableUpdateButton(this)">
+                                <input type="hidden" name="product_id" value="{{ product.id }}">
+                                <input type="hidden" name="action" value="">
+                            
+                                <button type="submit" class="remove-btn" onclick="setFormAction(this, 'remove')">Remove</button>
+                                <button type="submit" class="update-btn" disabled onclick="setFormAction(this, 'update')">Update</button>
+                            </form>
+                            
+                            <script>
+                                function enableUpdateButton(input) {
+                                    const form = input.closest('form');
+                                    const updateButton = form.querySelector('.update-btn');
+                                    updateButton.disabled = false;
+                                }
+                            
+                                function setFormAction(button, actionType) {
+                                    // Set the action type before submitting the form
+                                    const form = button.closest('form');
+                                    form.querySelector('input[name="action"]').value = actionType;
+                                }
+                            </script>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="cart-summary">
+                <p>Total Items: {{ total_items }}</p>
+                <p>Total Price: ₹{{ total_price }}</p>
+                <button onclick="openCheckoutModal()" class="checkout-btn">Proceed to Checkout</button>
+            </div>
+        {% else %}
+            <section class="cart-footer">
+                <p>Your cart is empty.</p>
+            </section>
+        {% endif %}
+    </div>
+
+    <!-- Checkout Modal -->
+    <div id="checkout-modal" class="checkout-modal" style="display: none;">
+        <div class="checkout-modal-content">
+            <span class="checkout-model-close-btn" onclick="closeCheckoutModal()">&times;</span>
+            <h2 class="checkout-modal-header">Order Summary</h2>
+            
+            <div class="checkout-modal-body">
+                <div class="summary">
+                    <p><strong>Total Items:</strong> {{ total_items }}</p>
+                    <p><strong>Total Price:</strong> ₹{{ total_price }}</p>
+                </div>
+
+                <h3>Shipping Address:</h3>
+                
+                <!-- JavaScript variable to hold address data -->
+                <script>
+                    const addressData = {{ user_addresses | tojson }};
+                </script>
+
+                <select id="address-select" onchange="updateSelectedAddress()">
+                    <option value="">Select an address</option>
+                </select>
+
+                <p id="selected-address" class="address-display"></p>
+            </div>
+
+            <button id="confirm-purchase-btn" onclick="confirmPurchase()" class="confirm-purchase-btn" disabled>Confirm Purchase</button>
+        </div>
+    </div>
+
+<script>
+    function openCheckoutModal() {
+        document.getElementById("checkout-modal").style.display = "block";
+    }
+
+    function closeCheckoutModal() {
+        document.getElementById("checkout-modal").style.display = "none";
+    }
+
+    function confirmPurchase() {
+        fetch('{{ url_for("confirm_purchase") }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                address_id: document.getElementById("address-select").value
+            })
+        })
+        .then(response => {
+            if (response.ok) {
+                alert('Purchase confirmed!');
+                closeCheckoutModal();
+                window.location.href = '{{ url_for("thank_you") }}';
+            } else {
+                alert('Error confirming purchase. Please try again.');
+            }
+        });
+    }
+
+    // Populate address dropdown and manage selected address display
+    document.addEventListener("DOMContentLoaded", () => {
+        const addressSelect = document.getElementById("address-select");
+        const selectedAddressDisplay = document.getElementById("selected-address");
+        const confirmButton = document.getElementById("confirm-purchase-btn");
+
+        // Populate dropdown options from addressData
+        addressData.forEach(address => {
+            const option = document.createElement("option");
+            option.value = address.id;
+            option.textContent = `${address.street}, ${address.city}, ${address.state}, ${address.zip_code}, ${address.country}`;
+            addressSelect.appendChild(option);
+        });
+
+        // Enable button and display selected address
+        addressSelect.addEventListener("change", () => {
+            const selectedId = addressSelect.value;
+            if (selectedId) {
+                const selectedAddress = addressData.find(addr => addr.id == selectedId);
+                selectedAddressDisplay.textContent = `${selectedAddress.street}, ${selectedAddress.city}, ${selectedAddress.state}, ${selectedAddress.zip_code}, ${selectedAddress.country}`;
+                confirmButton.disabled = false;
+            } else {
+                selectedAddressDisplay.textContent = "";
+                confirmButton.disabled = true;
+            }
+        });
+    });
+</script>
+
+    <footer>
+        <p>&copy; 2024 Thrift and Thrive. All rights reserved.</p>
+    </footer>
+</body>
+</html>
